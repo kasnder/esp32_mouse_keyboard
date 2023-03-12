@@ -1220,19 +1220,25 @@ void blink_task(void *pvParameter)
     // Initialize GPIO pins
     //gpio_pad_select_gpio(indicator_led);
     gpio_set_direction(indicator_led, GPIO_MODE_OUTPUT);
-    int blinkTime;
+    int waitTime;
 
     while(1) {
-		
-        if (isConnected()) blinkTime=1000;
-        else blinkTime=250;
+        if (isConnected()) {
+            waitTime = 1000;
 
-        /* Blink off (output low) */
-        gpio_set_level(indicator_led, 0);
-        vTaskDelay(blinkTime / portTICK_PERIOD_MS);
-        /* Blink on (output high) */
-        gpio_set_level(indicator_led, 1);
-        vTaskDelay(blinkTime / portTICK_PERIOD_MS);
+            /* Blink off (output low) */
+            gpio_set_level(indicator_led, 0);
+            vTaskDelay(waitTime / portTICK_PERIOD_MS);
+        } else {
+            waitTime = 250;
+
+            /* Blink off (output low) */
+            gpio_set_level(indicator_led, 0);
+            vTaskDelay(waitTime / portTICK_PERIOD_MS);
+            /* Blink on (output high) */
+            gpio_set_level(indicator_led, 1);
+            vTaskDelay(waitTime / portTICK_PERIOD_MS);
+        }
     }
 }
 
@@ -1427,7 +1433,7 @@ void uart_console_task(void *pvParameters)
 				{
 					if(active_hid_conn_ids[i] != -1)
 					{
-						kbdcmd[0] = 28;
+						kbdcmd[0] = 0x1C;
 						esp_hidd_send_keyboard_value(active_hid_conn_ids[i],0,kbdcmd,1);
 						kbdcmd[0] = 0;
 						esp_hidd_send_keyboard_value(active_hid_conn_ids[i],0,kbdcmd,1);
@@ -1435,6 +1441,116 @@ void uart_console_task(void *pvParameters)
 				}
                 ESP_LOGI(CONSOLE_UART_TAG,"received q: sending key y (z for QWERTZ) for test purposes");
                 break;
+
+            case 9: // see here: https://learn.adafruit.com/introducing-bluefruit-ez-key-diy-bluetooth-hid-keyboard/sending-keys-via-serial
+				for(uint8_t i = 0; i<CONFIG_BT_ACL_CONNECTIONS; i++)
+				{
+					if(active_hid_conn_ids[i] != -1)
+					{
+						kbdcmd[0] = 0x2B;
+						esp_hidd_send_keyboard_value(active_hid_conn_ids[i],0,kbdcmd,1);
+						kbdcmd[0] = 0;
+						esp_hidd_send_keyboard_value(active_hid_conn_ids[i],0,kbdcmd,1);
+					}
+				}
+                ESP_LOGI(CONSOLE_UART_TAG,"received TAB: sending key TAB for test purposes");
+                break;
+
+            case 13: // see here: https://learn.adafruit.com/introducing-bluefruit-ez-key-diy-bluetooth-hid-keyboard/sending-keys-via-serial
+				for(uint8_t i = 0; i<CONFIG_BT_ACL_CONNECTIONS; i++)
+				{
+					if(active_hid_conn_ids[i] != -1)
+					{
+						kbdcmd[0] = 0x28;
+						esp_hidd_send_keyboard_value(active_hid_conn_ids[i],0,kbdcmd,1);
+						kbdcmd[0] = 0;
+						esp_hidd_send_keyboard_value(active_hid_conn_ids[i],0,kbdcmd,1);
+					}
+				}
+                ESP_LOGI(CONSOLE_UART_TAG,"received ENTER: sending key ENTER for test purposes");
+                break;
+            case 32: // see here: https://learn.adafruit.com/introducing-bluefruit-ez-key-diy-bluetooth-hid-keyboard/sending-keys-via-serial
+				for(uint8_t i = 0; i<CONFIG_BT_ACL_CONNECTIONS; i++)
+				{
+					if(active_hid_conn_ids[i] != -1)
+					{
+						kbdcmd[0] = 0x2C;
+						esp_hidd_send_keyboard_value(active_hid_conn_ids[i],0,kbdcmd,1);
+						kbdcmd[0] = 0;
+						esp_hidd_send_keyboard_value(active_hid_conn_ids[i],0,kbdcmd,1);
+					}
+				}
+                ESP_LOGI(CONSOLE_UART_TAG,"received SPACE: sending key SPACE for test purposes");
+                break;
+
+            case 65: // see here: https://learn.adafruit.com/introducing-bluefruit-ez-key-diy-bluetooth-hid-keyboard/sending-keys-via-serial
+				for(uint8_t i = 0; i<CONFIG_BT_ACL_CONNECTIONS; i++)
+				{
+					if(active_hid_conn_ids[i] != -1)
+					{
+						kbdcmd[0] = 0x52;
+						esp_hidd_send_keyboard_value(active_hid_conn_ids[i],0,kbdcmd,1);
+						kbdcmd[0] = 0;
+						esp_hidd_send_keyboard_value(active_hid_conn_ids[i],0,kbdcmd,1);
+					}
+				}
+                ESP_LOGI(CONSOLE_UART_TAG,"received UP: sending key UP for test purposes");
+                break;
+            case 68: // see here: https://learn.adafruit.com/introducing-bluefruit-ez-key-diy-bluetooth-hid-keyboard/sending-keys-via-serial
+				for(uint8_t i = 0; i<CONFIG_BT_ACL_CONNECTIONS; i++)
+				{
+					if(active_hid_conn_ids[i] != -1)
+					{
+						kbdcmd[0] = 0x50;
+						esp_hidd_send_keyboard_value(active_hid_conn_ids[i],0,kbdcmd,1);
+						kbdcmd[0] = 0;
+						esp_hidd_send_keyboard_value(active_hid_conn_ids[i],0,kbdcmd,1);
+					}
+				}
+                ESP_LOGI(CONSOLE_UART_TAG,"received LEFT: sending key LEFT for test purposes");
+                break;
+            case 66: // see here: https://learn.adafruit.com/introducing-bluefruit-ez-key-diy-bluetooth-hid-keyboard/sending-keys-via-serial
+				for(uint8_t i = 0; i<CONFIG_BT_ACL_CONNECTIONS; i++)
+				{
+					if(active_hid_conn_ids[i] != -1)
+					{
+						kbdcmd[0] = 0x51;
+						esp_hidd_send_keyboard_value(active_hid_conn_ids[i],0,kbdcmd,1);
+						kbdcmd[0] = 0;
+						esp_hidd_send_keyboard_value(active_hid_conn_ids[i],0,kbdcmd,1);
+					}
+				}
+                ESP_LOGI(CONSOLE_UART_TAG,"received DOWN: sending key DOWN for test purposes");
+                break;
+            case 67: // see here: https://learn.adafruit.com/introducing-bluefruit-ez-key-diy-bluetooth-hid-keyboard/sending-keys-via-serial
+				for(uint8_t i = 0; i<CONFIG_BT_ACL_CONNECTIONS; i++)
+				{
+					if(active_hid_conn_ids[i] != -1)
+					{
+						kbdcmd[0] = 0x4F;
+						esp_hidd_send_keyboard_value(active_hid_conn_ids[i],0,kbdcmd,1);
+						kbdcmd[0] = 0;
+						esp_hidd_send_keyboard_value(active_hid_conn_ids[i],0,kbdcmd,1);
+					}
+				}
+                ESP_LOGI(CONSOLE_UART_TAG,"received RIGHT: sending key RIGHT for test purposes");
+                break;
+
+
+            case 8: // see here: https://learn.adafruit.com/introducing-bluefruit-ez-key-diy-bluetooth-hid-keyboard/sending-keys-via-serial
+				for(uint8_t i = 0; i<CONFIG_BT_ACL_CONNECTIONS; i++)
+				{
+					if(active_hid_conn_ids[i] != -1)
+					{
+						kbdcmd[0] = 0x2A;
+						esp_hidd_send_keyboard_value(active_hid_conn_ids[i],0,kbdcmd,1);
+						kbdcmd[0] = 0;
+						esp_hidd_send_keyboard_value(active_hid_conn_ids[i],0,kbdcmd,1);
+					}
+				}
+                ESP_LOGI(CONSOLE_UART_TAG,"received BACKSPACE: sending key BACKSPACE for test purposes");
+                break;
+
             default:
                 ESP_LOGI(CONSOLE_UART_TAG,"received: %d, no HID action",character);
                 break;
